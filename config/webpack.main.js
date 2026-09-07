@@ -10,19 +10,14 @@ module.exports = {
 		...pages.reduce((acc, page) => {
 			acc[page] = `./js/${page}.js`
 			return acc
-		}, {}),
-		// Two extra chunks that exist only to emit css/banner_wide.css and
-		// css/banner_narrow.css. The sponsor creative is base64 in CSS (no
-		// blockable request URL), and splitting it per breakpoint means a visitor
-		// downloads one creative instead of both. They are not in `pages`, so
-		// HTMLWebpackPlugin does not inject them and purgecss does not touch them;
-		// head.ejs links them with media queries. Their stub JS bundles are
-		// deleted after the build by config/purgecss.mjs.
-		banner_wide: './js/banner_wide.js',
-		banner_narrow: './js/banner_narrow.js'
+		}, {})
 	},
 	output: {
 		filename: 'js/[name].js',
+		// The sponsor creative is an async chunk (see js/components/sponsor.js),
+		// so its request URL is a content hash that changes on every deploy and
+		// carries no word worth writing a network rule against.
+		chunkFilename: 'js/[contenthash].js',
 		path: config.build,
 		clean: false,
 		assetModuleFilename: '[path][name][ext]',
@@ -109,22 +104,7 @@ module.exports = {
 			},
 			{
 				test: /\.ejs$/i,
-				use: [
-					{
-						loader: 'html-loader',
-						options: {
-							sources: {
-								// The banner stylesheets are emitted by their own
-								// webpack entries, so they do not exist yet when
-								// html-loader walks the template. Everything else
-								// (the favicon path, for one) still resolves.
-								urlFilter: (attribute, value) =>
-									!/^\/css\/banner_/.test(value)
-							}
-						}
-					},
-					'template-ejs-loader'
-				]
+				use: ['html-loader', 'template-ejs-loader']
 			},
 			{
 				test: /\.js$/,

@@ -11,6 +11,7 @@ import { aos } from './components/aos'
 import { fadeIn, fadeOut } from './components/fade'
 import { Snackbar } from './components/snackbar'
 import { LocalStorageManager } from './components/localStorage'
+import { Sponsor } from './components/sponsor'
 
 // These icons always accompany visible text, so exposing them as unnamed
 // images only adds noise and creates invalid accessibility-tree entries.
@@ -706,6 +707,9 @@ document.addEventListener('DOMContentLoaded', function () {
 	})
 	new gotop()
 	new aos()
+	// Not awaited: the test below is what the visitor came for. A rejection here
+	// means the creative chunk did not load, which is a non-event for the page.
+	new Sponsor('.notice_stack').start().catch(() => {})
 	Object.keys(settings).forEach((key) => {
 		try {
 			const c = document.querySelector('#' + key)

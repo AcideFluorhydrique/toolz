@@ -54,11 +54,17 @@ jobs:
               if(!types.includes(t)) { console.error('::error::JSON-LD @graph missing '+t); process.exit(1); }
           "
           for f in sitemap.xml robots.txt d3host.txt d3host.adblock \
-                   css/index.css css/banner_wide.css css/banner_narrow.css \
+                   css/index.css \
                    js/index.js js/pagead.js js/widget/ads.js assets/btcpay/pay.svg; do
             [ -s "dist/$f" ] || fail "dist/$f missing or empty"
           done
-          if ! grep -q 'banner_narrow.css' dist/index.html; then fail "banner stylesheets not linked"; fi
+          # The sponsor creative ships as two content-hashed async chunks with no
+          # fixed name, so check that both were emitted rather than naming them.
+          [ "$(find dist/js -maxdepth 1 -name '*.js' ! -name 'index.js' ! -name '404.js' ! -name 'pagead.js' | wc -l)" -ge 2 ] \
+            || fail "sponsor creative chunks missing from dist/js"
+          # The sponsor must not be reachable from the markup: everything about it
+          # that ever shipped as static HTML got a filter rule written against it.
+          if grep -q 'shockvpn' dist/index.html; then fail "sponsor destination leaked into the markup"; fi
           if grep -q 'btcpay.priorato.org/img' dist/index.html; then
             fail "pay button still loads from the remote payment host"
           fi

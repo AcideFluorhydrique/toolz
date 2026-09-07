@@ -117,13 +117,5 @@
 
 	<% } %>
 
-	<% if (page === 'adblock') { %>
-	<!-- Sponsor creative, split per breakpoint. A non-matching media attribute
-	     makes the stylesheet non-render-blocking and low priority, so a visitor
-	     pays for one creative instead of both. Together these two files hold the
-	     base64 image that was 54% of the single render-blocking stylesheet. -->
-	<link href="/css/banner_narrow.css" rel="stylesheet" media="(max-width: 48em)">
-	<link href="/css/banner_wide.css" rel="stylesheet" media="(min-width: 48.0625em)">
-	<% } %>
 
 </head>

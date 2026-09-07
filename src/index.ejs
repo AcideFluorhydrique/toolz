@@ -108,14 +108,11 @@
                 </div>
             </section>
             <section>
-                <!-- The sponsor sits in its own container so a cosmetic rule scoped to it
-                     cannot take the accuracy caveat and the GitHub ask down with it. The
-                     creative is a base64 background in the stylesheet, not a separate
-                     request, so there is no URL for a network rule to match. -->
-                <div class="hero_extra">
-                    <a href="https://shockvpn.com/?utm_source=adblock.turtlecute.org" class="hero_feature" data-umami-event="ShockVPN banner click" data-umami-event-partner="ShockVPN" target="_blank" rel="noopener noreferrer sponsored" aria-label="Learn more about ShockVPN (opens in a new tab)">
-                    </a>
-                </div>
+                <!-- The sponsor is not in this template. Every version of it that was
+                     shipped as markup got a domain-scoped rule written against whatever
+                     was stable about it, so it is now built at run time by
+                     js/components/sponsor.js and inserted at the top of .notice_stack,
+                     alongside the caveat and the GitHub ask it shares a class with. -->
                 <div class="notice_stack">
                     <p class="i_box _warn">
                         <svg class="i_ico" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true">

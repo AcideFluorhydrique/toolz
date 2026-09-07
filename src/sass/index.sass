@@ -59,41 +59,15 @@ main
 		>div
 			padding-top: .25rem
 			padding-bottom: .25rem
-// The sponsor lives alone in .hero_extra, and the info bars live in
-// .notice_stack, so a cosmetic rule scoped to the sponsor cannot also remove the
-// accuracy caveat and the GitHub ask. No padding here on purpose: if the child
-// is hidden the container collapses to nothing instead of leaving a gap.
-.hero_extra
-	display: block
-	padding: 0 var(--sp-1)
+// The sponsor is inserted here at run time as a first child, sharing .i_box with
+// the two info bars. Its own geometry ships in a run-time stylesheet keyed to a
+// per-load class name, not from here: a class that exists in index.css is a
+// class a cosmetic rule can name. See js/components/sponsor.js.
 .notice_stack
 	display: flex
 	flex-direction: column
 	gap: var(--sp-3)
 	padding: var(--sp-3) var(--sp-1) var(--sp-1)
-// The creative itself is a base64 background declared in banner_wide.sass /
-// banner_narrow.sass, loaded as two media-scoped stylesheets. Keeping it in CSS
-// rather than an <img> or a separate file means there is no request URL for a
-// network filter rule to match, and only the breakpoint in use is downloaded.
-.hero_feature
-	display: block
-	overflow: hidden
-	border-radius: var(--r-lg)
-	text-decoration: none
-	line-height: 0
-	width: 100%
-	margin-top: var(--sp-3)
-	aspect-ratio: 1940 / 240
-	background-position: center
-	background-size: 100% 100%
-	background-repeat: no-repeat
-	@media (max-width: 48em)
-		aspect-ratio: 1200 / 400
-	@media (max-width: 40em)
-		margin-top: var(--sp-1)
-	&:focus-visible
-		outline: 2px solid var(--focus)
-		outline-offset: 3px
 // One info bar, two variants: _warn for the test caveat, _info for the star ask
 .i_box
 	display: flex
