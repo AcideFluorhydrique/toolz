@@ -252,88 +252,19 @@ adblock.turtlecute.org##.textads</code></pre>
                 </div>
             </section>
         </div>
-        <%# Rendered at build time from the same data the test runs on, so the copy and
-        the test can never drift apart. This is also the only place a crawler that does
-        not execute JavaScript can see what the Host category actually checks.
-        Each require() must stay on its own single line: template-ejs-loader rewrites
-        the path only when require() and the EJS tags share a line. %>
-        <% const adblock_data = require('./data/adblock_data.json') %>
-        <% const CATEGORY_LABELS = require('./data/category_labels.json') %>
-        <%
-        const categories = Object.keys(adblock_data).map((key) => {
-            const brands = Object.keys(adblock_data[key])
-            const hosts = brands.reduce((n, b) => n + adblock_data[key][b].length, 0)
-            return { key: key, label: CATEGORY_LABELS[key] || key, brands: brands, hosts: hosts }
-        })
-        const totalHosts = categories.reduce((n, c) => n + c.hosts, 0)
-        const totalBrands = categories.reduce((n, c) => n + c.brands.length, 0)
-        %>
-        <section class="seo_content better_r">
-            <h2>What this ad blocker test checks</h2>
-            <p>Three independent checks, scored together. No real ads or trackers are ever loaded.</p>
-            <div class="checks_grid row keep-width">
-                <div>
-                    <div class="card _h-100">
-                        <h3>Cosmetic filters</h3>
-                        <p>Two ad-shaped elements, one static and one added after load. The test measures whether your blocker removes or hides them.</p>
-                    </div>
-                </div>
-                <div>
-                    <div class="card _h-100">
-                        <h3>Ad script loading</h3>
-                        <p>Two decoy scripts named <code>ads.js</code> and <code>pagead.js</code>. The test measures whether they were stopped from running.</p>
-                    </div>
-                </div>
-                <div>
-                    <div class="card _h-100">
-                        <h3>Host and DNS blocking</h3>
-                        <p><%= totalHosts %> hostnames across <%= totalBrands %> ad, analytics, tracking and telemetry services. This is the only category a DNS filter can score on.</p>
-                    </div>
-                </div>
-            </div>
-            <h3 class="hosts_head">The <%= totalHosts %> hosts, by category</h3>
-            <ul class="hosts_list">
-                <% categories.forEach(function (c) { %>
-                <li>
-                    <b><%= c.label %></b>
-                    <span class="hosts_count"><%= c.hosts %> hosts</span>
-                    <span class="hosts_brands"><%= c.brands.join(', ') %></span>
-                </li>
-                <% }) %>
-            </ul>
-        </section>
-        <section class="seo_content better_r">
-            <h2>Testing a DNS filter: Pi-hole, AdGuard Home, NextDNS, AdGuard DNS or Control D</h2>
-            <p>A DNS filter blocks domains, so it can only pass the Host category. Here is the score to expect and how to read it.</p>
-            <div class="dns_grid row keep-width">
-                <div>
-                    <div class="card _h-100">
-                        <h3>What a good Pi-hole score looks like</h3>
-                        <p>A DNS filter on its own answers <%= totalHosts %> of the <%= totalHosts + 4 %> checks, so <b>roughly 40&ndash;60% is the correct result</b>, not a failure. The four cosmetic and script checks need a browser extension, which no DNS resolver can do. If you want to know whether your Pi-hole is working, look at the Host category, not the total.</p>
-                    </div>
-                </div>
-                <div>
-                    <div class="card _h-100">
-                        <h3>Turn the block page off first</h3>
-                        <p>Pi-hole, AdGuard Home and NextDNS can answer a blocked domain with their own block page instead of dropping the request. To this test that looks like a <em>successful</em> connection, so your score drops even though the domain was blocked. Set the blocking mode to NXDOMAIN or NULL and re-run.</p>
-                    </div>
-                </div>
-                <div>
-                    <div class="card _h-100">
-                        <h3>Getting to a full score</h3>
-                        <p>Pair the DNS filter with a browser extension such as uBlock Origin or the AdGuard extension. The DNS layer covers the hosts, the extension covers the cosmetic filters and the ad scripts. That combination is what scores green here.</p>
-                    </div>
-                </div>
-            </div>
-            <p class="dns_note">Written Pi-hole, pi-hole or pihole &mdash; all the same thing, and the same advice applies to AdGuard Home, AdGuard DNS, Control D, Quad9 and any other resolver-level blocker. The test cannot see per-client rules, regex filters or allowlists &mdash; only whether the <%= totalHosts %> hostnames above resolved.</p>
-        </section>
         <section class="seo_content better_r">
             <h2>Ad blocker test FAQ</h2>
-            <p>Answers about how the test works, what your score means, and how to improve it.</p>
             <div class="faq_list">
                 <details>
                     <summary>How does the ad blocker test work?</summary>
                     <div>One click runs three independent checks and scores how much of your setup blocks ads and trackers. No real ads or trackers are ever loaded during the test.</div>
+                </details>
+                <details>
+                    <summary>How do I test Pi-hole, AdGuard Home or NextDNS?</summary>
+                    <div>
+                        <p>Run the test with the DNS filter on and look at the Host category. A DNS filter blocks domains only, so it cannot pass the four cosmetic and script checks and cannot get 100% without a browser extension.</p>
+                        <p>If your Pi-hole, AdGuard Home or NextDNS shows a block page for blocked domains, the test counts those domains as not blocked. Set the blocking mode to NXDOMAIN or NULL and run the test again.</p>
+                    </div>
                 </details>
                 <details>
                     <summary>My ad blocker is configured correctly but the test does not work. Why?</summary>
